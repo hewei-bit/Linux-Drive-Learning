@@ -1,0 +1,376 @@
+一、启动分析
+
+（一）uboot
+
+1.uboot的概述
+
+（1）
+	uboot通用的引导程序。表现为硬件的通用性、软件的通用性。
+	硬件的通用性：几乎兼容所有主流的CPU架构，ARM、x86、mips、avr32................
+	软件的通用性：引导linux内核、wince内核、VxWorks...............
+
+	线刷包，就是使用uboot的刷机功能——fastboot。
+（2）
+	CPU级硬件的初始化：CPU的频率、串口初始化、I2C....
+	板级硬件的初始化：网络接口............
+
+2.uboot的开机信息
+
+U-Boot 2014.07 (Nov 19 2017 - 09:52:45)   //用到uboot的版本，编译生成时间
+
+PLL : [0] =  800000000, [1] =  800000000, [2] =  780000000, [3] =  800000000    //CPU现在运行的最高频率为800MHz
+(0) PLL1: CPU  FCLK =  800000000, HCLK = 200000000 (G0)
+(7) PLL1: CPU  FCLK =  800000000, HCLK = 200000000 (G1)
+(2) PLL3: MEM  FCLK =  800000000, DCLK = 800000000, BCLK = 400000000, PCLK = 200000000
+(1) PLL0: BUS  BCLK =  400000000, PCLK = 200000000
+(8) PLL0: CCI4 BCLK =  400000000, PCLK = 200000000
+(3) PLL0: G3D  BCLK =  400000000
+(4) PLL0: CODA BCLK =  400000000, PCLK = 200000000
+(5) PLL0: DISP BCLK =  400000000, PCLK = 200000000
+(6) PLL0: HDMI PCLK =  133333333
+
+I2C:   ready
+DRAM:  1 GiB	//1GB = 1000MB  1MB=1000KB  1GiB=1024MiB 1MiB = 1024KiB
+Heap = 0x44000000~0x46000000
+Code = 0x43c00000~0x43c83e48
+GLD  = 0x43bffeb8
+GLBD = 0x43bffe68
+SP   = 0x43bffe68,0x43bffe48(CURR)
+PC   = 0x43c066f0
+TAGS = 0x40000100 
+PAGE = 0x43c90000~0x43c9c000
+MACH = [4330]   
+VER  = 0      
+BOARD= [GEC6818]    
+MMC:   NXP DWMMC: 0, NXP DWMMC: 1, NXP DWMMC: 2
+In:    serial
+Out:   serial
+Err:   serial
+## DCDC_MODE(0x80): DCDC1[PFM], DCDC2[PFM], DCDC3[PFM], DCDC4[PWM], DCDC5[PWM] 
+## STATUS(0x00)   : 0xe4 0x10 
+## IRQ(0x48)      : 0x00 0x00 0x00 0x00 0x00 
+## CHG_TYPE       : ADP
+## BAT_VOL        : 0mV 
+## BAT_CAP        : 100%
+DONE: Logo bmp 800 by 480 (3bpp), len=1152054 
+DRAW: 0x47000000 -> 0x46000000 
+DONE: Logo bmp 800 by 480 (3bpp), len=1152054 
+DRAW: 0x47000000 -> 0x46000000 
+RGB: display.0
+MIPI: display.0
+DSIM_ESCMODE 1 : 0xc0
+DSIM_STATUS : 0x10010f
+MIPI clk:  420MHz 
+DSIM_ESCMODE 2 : 0x0
+DSIM_STATUS : 0x10010f
+## Skip BAT Animation. 
+## IRQ(0x48)   : 0x00 0x00 0x00 0x00 0x00 
+## chg_type    : ADP 
+## battery_vol : 0mV 
+## battery_cap : 100%
+## Booting 
+Card did not respond to voltage select!
+Net:   GEC6818 mac init...
+dwmac.c0060000
+Hit any key to stop autoboot:  0
+GEC6818#
+
+
+(二)命令
+
+1.help，帮助
+GEC6818# help
+
+命令名称   命令帮助信息
+0       - do nothing, unsuccessfully
+1       - do nothing, successfully
+?       - alias for 'help'
+base    - print or set address offset
+bdinfo  - print Board Info structure【常用】
+boot    - boot default, i.e., run 'bootcmd'
+bootd   - boot default, i.e., run 'bootcmd'
+bootm   - boot application image from memory【常用】
+bootp   - boot image via network using BOOTP/TFTP protocol
+cmd     - cmd [command] options...
+cmp     - memory compare
+cp      - memory copy
+crc32   - checksum calculation
+dhcp    - boot image via network using DHCP/TFTP protocol
+drawbmp - darw bmpfile on address 'addr' to framebuffer 
+env     - environment handling commands
+exit    - exit script
+ext4load- load binary file from a Ext4 filesystem
+ext4ls  - list files in a directory (default /)
+ext4write- create a file in the root directory
+fastboot- fastboot- use USB Fastboot protocol
+
+fatinfo - print information about filesystem
+fatload - load binary file from a dos filesystem
+fatls   - list files in a directory (default /)
+fatwrite- write file into a dos filesystem
+fdisk   - mmc list or create ms-dos partition tables (MAX TABLE 7)
+go      - start application at address 'addr'【常用】
+goimage - start Image at address 'addr'
+help    - print command description/usage【常用】
+i2c     - I2C sub-system
+i2cmod  - set I2C mode
+iminfo  - print header information for application image
+loadbmp - load bmpfile with command or 'bootlog' environment 
+loop    - infinite loop on address range
+md      - memory display
+mdio    - MDIO utility commands
+mii     - MII utility commands
+mm      - memory modify (auto-incrementing address)
+mmc     - MMC sub system
+mmcinfo - display MMC info
+mtest   - simple RAM read/write test
+mw      - memory write (fill)
+nm      - memory modify (constant address)
+ping    - send ICMP ECHO_REQUEST to network host
+pmic    - PMIC
+printenv- print environment variables
+reset   - Perform RESET of the CPU
+run     - run commands in an environment variable
+saveenv - save environment variables to persistent storage【常用】
+sdfuse  - sdfuse  - read images from FAT partition of SD card and write them to booting device.
+
+setenv  - set environment variables【常用】
+showvar - print local hushshell variables
+source  - run script from memory
+test    - minimal test like /bin/sh
+tftpboot- boot image via network using TFTP protocol【常用】
+udown   - Download USB
+update_mmc- update mmc data
+
+2.bdinfo，开发板的信息
+GEC6818# bdinfo
+arch_number = 0x000010EA
+boot_params = 0x40000100
+DRAM bank   = 0x00000000	//内存通道0
+-> start    = 0x40000000	//内存起始地址：0x40000000
+-> size     = 0x40000000	//内存大小：0x40000000，1GiB大小
+eth0name    = dwmac.c0060000	//网卡的名字
+ethaddr     = 00:e2:1c:ba:e8:60	//网卡的硬件地址，也就是MAC地址
+current eth = dwmac.c0060000
+ip_addr     = 192.168.67.3	//当前uboot状态下，ip地址192.168.67.3
+baudrate    = 115200 bps	//当前终端串口的波特率：115200bps
+TLB addr    = 0x7FFF0000
+relocaddr   = 0x46000000
+reloc off   = 0x00000000
+irq_sp      = 0x7DF6BF00
+sp start    = 0x43BFFE68
+
+
+3.printenv，打印环境变量
+GEC6818# printenv
+
+环境变量名字    环境变量的参数
+baudrate=115200
+bootargs=lcd=at070tn92 tp=gslx680-linux root=/dev/mmcblk0p2 rw rootfstype=ext4
+bootcmd=ext4load mmc 2:1 0x48000000 uImage;bootm 0x48000000
+bootdelay=5
+bootfile=uImage
+ethact=dwmac.c0060000
+ethaddr=00:e2:1c:ba:e8:60
+ethprime=RTL8211
+fastboot=flash=mmc,2:GECuboot:2nd:0x200,0x78000;flash=mmc,2:2ndboot:2nd:0x200,0x4000;flash=mmc,2:bootloader:boot:0x8000,0x70000;flash=mmc,2:boot:ext4:0x00100000,0x04000000;flash=mmc,2:system:ext4:0x04100000,0x2F200000;flash=mmc,2:cache:ext4:0x33300000,0x1AC00000;flash=mmc,2:misc:emmc:0x4E000000,0x00800000;flash=mmc,2:recovery:emmc:0x4E900000,0x01600000;flash=mmc,2:userdata:ext4:0x50000000,0x0;
+filesize=119436
+gatewayip=192.168.67.1
+ipaddr=192.168.67.3
+netmask=255.255.255.0
+qtcrc=-1489582083
+serverip=192.168.67.2
+stderr=serial
+stdin=serial
+stdout=serial
+
+
+（1）关键参数
+
+(a)bootargs=lcd=at070tn92 tp=gslx680-linux root=/dev/mmcblk0p2 rw rootfstype=ext4
+
+.lcd=at070tn92：lcd的硬件驱动芯片为at070tn92
+.tp=gslx680-linux：触摸屏的驱动芯片型号gslx680-linux
+.root=/dev/mmcblk0p2：根文件系统的分区位置
+	mmcblk0,硬盘0
+	p2，partions 2，分区2
+.rw，该文件系统可读可写 
+.rootfstype=ext4，该文件系统类型为ext4
+
+
+(b)bootcmd=ext4load mmc 2:1 0x48000000 uImage;bootm 0x48000000
+
+启动命令，同时该命令当uboot启动完毕后过一会儿就自动执行的
+
+ext4load mmc 2:1，以ext4文件系统去加载分区1的内核镜像uImage，放到内存0x48000000
+bootm 0x48000000，运行内存中0x48000000中的内核镜像
+
+
+4.设置网卡相关的地址信息
+
+GEC6818# setenv ipaddr 192.168.66.3
+GEC6818# setenv gatewayip 192.168.66.1
+GEC6818# setenv serverip 192.168.66.2
+GEC6818# saveenv
+
+
+5.设置启动延迟
+GEC6818# set bootdelay 3
+GEC6818# save
+Saving Environment to MMC...
+Writing to MMC(2)... done
+
+
+6.复位开发板
+GEC6818# reset
+
+7.删除环境变量
+例如删除ipaddrr这个变量
+GEC6818# set ipaddrr 空格
+GEC6818# save
+
+
+8.检测网络是否通畅
+GEC6818# ping 目的IP地址
+
+GEC6818# ping 192.168.66.2
+
+
+1）ping不通
+GEC6818# ping 192.168.66.2 
+dwmac.c0060000 Waiting for PHY auto negotiation to complete...... done
+dwmac.c0060000: No link.
+ping failed; host 192.168.66.2 is not alive
+
+2）ping通
+GEC6818# ping 192.168.66.2
+Speed: 1000, full duplex
+Using dwmac.c0060000 device
+host 192.168.66.2 is alive
+
+9.通过tftp下载程序
+tftp 内存地址  文件名
+
+GEC6818# tftp 0x40000000 led.bin
+Speed: 1000, full duplex
+Using dwmac.c0060000 device
+TFTP from server 192.168.66.2; our IP address is 192.168.66.3
+Filename 'led.bin'.
+Load address: 0x40000000
+Loading: #
+         209 KiB/s
+done
+Bytes transferred = 428 (1ac hex)
+
+
+
+10.运行指定内存地址中的二进制程序
+go 内存地址
+
+GEC6818# go 0x40000000
+## Starting application at 0x40000000 ...
+
+
+
+11.启动内核
+GEC6818# boot
+
+
+
+三、linux内核
+
+1、内核的作用
+
+1）进程的管理和进程的通信：进程的创建和删除、进程之间优先级抢占、进程的时间片轮转调度、进程间的通信。
+2）内存管理：内存分配算法，每个进程的内存空间由Linux进行分配。
+3）支持的文件系统，可以通过cat /proc/filesystems
+4）设备的管理，聚焦到linux驱动：字符设备、块设备、网络设备、中断、内核时钟。【*】
+5）网络协议：TCP/IP。
+linux内核的官网：https://www.kernel.org/
+
+
+2、输出信息
+
+0）
+## Booting kernel from Legacy Image at 48000000 ...
+   Image Name:   Linux-3.4.39-gec                                        //内核版本，3.4.39，该镜像由gec定制
+   Image Type:   ARM Linux Kernel Image (uncompressed)
+   Data Size:    5540912 Bytes = 5.3 MiB                                 //内核镜像的大小5.3MB
+   Load Address: 40008000                                                //内核是存储在内存地址空间0x40008000
+   Entry Point:  40008000                                                //内核执行的入口地址0x40008000
+   Verifying Checksum ... OK                                             //校验镜像的内容是否完整
+   Loading Kernel Image ... OK                                           //若校验成功，则启动内核
+Starting kernel ...
+
+
+
+1）使用CPU 0 来启动Linux
+[    0.000000] Booting Linux on physical CPU 0
+
+2）Linux内核的版本、编译生成时间
+[    0.000000] Linux version 3.4.39-gec (root@ubuntu) (gcc version 4.8 (GCC) ) #8 SMP PREEMPT Wed Jul 29 11:09:28 CST 2020
+
+3）芯片型号
+[    0.000000] Machine: s5p6818
+
+4）配置好时钟
+[    0.000000] PLL : [0] =  800000000, [1] =  800000000, [2] =  780000000, [3] =  800000000
+[    0.000000] (0) PLL1: CPU  FCLK =  800000000, HCLK = 200000000 (G0)
+[    0.000000] (7) PLL1: CPU  FCLK =  800000000, HCLK = 200000000 (G1)
+[    0.000000] (2) PLL3: MEM  FCLK =  800000000, DCLK = 800000000, BCLK = 400000000, PCLK = 200000000
+[    0.000000] (1) PLL0: BUS  BCLK =  400000000, PCLK = 200000000
+[    0.000000] (8) PLL0: CCI4 BCLK =  400000000, PCLK = 200000000
+[    0.000000] (3) PLL0: G3D  BCLK =  400000000
+[    0.000000] (4) PLL0: CODA BCLK =  400000000, PCLK = 200000000
+[    0.000000] (5) PLL0: DISP BCLK =  400000000, PCLK = 200000000
+[    0.000000] (6) PLL0: HDMI PCLK =  133333333
+
+5）内存的初始化
+[    0.000000] Memory: 1024MB = 1024MB total
+[    0.000000] Memory: 810636k/810636k available, 237940k reserved, 272384K highmem
+[    0.000000] Virtual kernel memory layout:
+[    0.000000]     vector  : 0xffff0000 - 0xffff1000   (   4 kB)
+[    0.000000]     fixmap  : 0xfff00000 - 0xfffe0000   ( 896 kB)
+[    0.000000]     vmalloc : 0xef800000 - 0xfee00000   ( 246 MB)
+[    0.000000]     lowmem  : 0xc0000000 - 0xef600000   ( 758 MB)
+[    0.000000]     pkmap   : 0xbfe00000 - 0xc0000000   (   2 MB)
+[    0.000000]     modules : 0xbf000000 - 0xbfe00000   (  14 MB)
+[    0.000000]       .text : 0xc0008000 - 0xc0a788f0   (10691 kB)
+[    0.000000]       .init : 0xc0a79000 - 0xc0ab7100   ( 249 kB)
+[    0.000000]       .data : 0xc0ab8000 - 0xc0b55c38   ( 632 kB)
+[    0.000000]        .bss : 0xc0b55c5c - 0xc0d37dc8   (1929 kB)
+
+
+6）初始化其他硬件：gpio、timer、i2c.......
+[    0.175000] s3c-i2c s3c2440-i2c.2: i2c-2: S3C I2C adapter
+[    0.175000] s3c-i2c s3c2440-i2c.2: slave address 0x10
+[    0.175000] s3c-i2c s3c2440-i2c.2: bus frequency set to 97 KHz
+
+7）各种协议初始化
+[    0.274000] Bluetooth: HCI device and connection manager initialized
+[    0.274000] Bluetooth: HCI socket layer initialized
+[    0.274000] Bluetooth: L2CAP socket layer initialized
+[    0.274000] Bluetooth: SCO socket layer initialized
+.....................
+
+[    0.303000] IP route cache hash table entries: 32768 (order: 5, 131072 bytes)
+[    0.303000] TCP established hash table entries: 131072 (order: 8, 1048576 bytes)
+[    0.306000] TCP bind hash table entries: 65536 (order: 8, 1572864 bytes)
+[    0.307000] TCP: Hash tables configured (established 131072 bind 65536)
+[    0.308000] TCP: reno registered
+[    0.308000] UDP hash table entries: 512 (order: 3, 32768 bytes)
+[    0.308000] UDP-Lite hash table entries: 512 (order: 3, 32768 bytes)
+
+8）挂载根文件系统
+[    2.771000] EXT4-fs (mmcblk0p2): re-mounted. Opts: data=ordered
+
+
+9）加载脚本文件
+/etc/profile
+/etc/init.d/rcS
+
+10）进入shell命令行
+[root@GEC6818 /]#
+
+
+
