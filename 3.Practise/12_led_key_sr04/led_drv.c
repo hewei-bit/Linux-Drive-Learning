@@ -72,8 +72,6 @@ ssize_t led_read (struct file *file, char __user *buf, size_t len, loff_t *offse
 	return len;
 }
 
-
-
 ssize_t led_write (struct file *file, const char __user *buf, size_t len, loff_t *offset)
 {
 	int rt;

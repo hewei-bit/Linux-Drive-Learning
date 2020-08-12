@@ -156,7 +156,7 @@ static int __init mySR04_init(void)
 	int value;
 
 	//构建设备号,主设备号为240，次设备号为0
-	SR04_num=MKDEV(240,3);
+	SR04_num=MKDEV(240,2);
 	
 	//申请设备号，申请一个字符设备，若成功，会在/proc/devices文件当中显示mySR04的名字
 	rt = register_chrdev_region(SR04_num,1,"mySR04");
