@@ -3,12 +3,20 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
-
-                
+                "${workspaceFolder}/**",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/include",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/include/linux",
+               
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/arch/um/include/asm",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/arch/arm/include/asm",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/include/asm-generic",
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/tools/perf/util/include/asm",
+   
+                "D:/SHARE/GEC/6818开发板/源码/6818GEC/kernel/arch/arm/plat-s5p6818/common"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "D:/QT/Tools/mingw730_32/bin/g++.exe",
             "cStandard": "c11",
             "cppStandard": "c++14",
             "intelliSenseMode": "clang-x64"
