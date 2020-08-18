@@ -12,10 +12,13 @@
 #include <linux/miscdevice.h>//misc_register
 #include <linux/ioctl.h>
 
-#define CMD_LED_D7 _IOW('L',0,unsigned int)
-#define CMD_LED_D8 _IOW('L',1,unsigned int)
-#define CMD_LED_D9 _IOW('L',2,unsigned int)
-#define CMD_LED_D10 _IOW('L',3,unsigned int)
+#define CMD_LED_D7		_IOW('L',0,unsigned int)
+#define CMD_LED_D8		_IOW('L',1,unsigned int)
+#define CMD_LED_D9		_IOW('L',2,unsigned int)
+#define CMD_LED_D10		_IOW('L',3,unsigned int)
+
+//自行补充其他LED灯的命令
+
 
 static struct gpio leds_gpios[] = {
 	{ PAD_GPIO_E+13, GPIOF_OUT_INIT_HIGH, "LED D7" }, /* default to OFF */
@@ -24,44 +27,60 @@ static struct gpio leds_gpios[] = {
 	{ PAD_GPIO_C+7, GPIOF_OUT_INIT_HIGH, "LED D10" }, /* default to OFF */
 };
 
+
 int led_open (struct inode * inode, struct file *file)
 {
 	printk(KERN_INFO"led_open\n");
 	return 0;
 }
 
+
+
 int led_close (struct inode * inode, struct file *file)
 {
 	printk(KERN_INFO"led_close\n");
+	
+	
 	return 0;
 }
 
-
-
 long led_ioctl (struct file *filp, unsigned int cmd, unsigned long args)
 {
-	switch (cmd)
+	
+	switch(cmd)
 	{
-	case CMD_LED_D7:
-		gpio_set_value(PAD_GPIO_E+13,args ? 0:1);
-		break;
-	case CMD_LED_D8:
-		gpio_set_value(PAD_GPIO_C+17,args ? 0:1);
-		break;
-	case CMD_LED_D9:
-		gpio_set_value(PAD_GPIO_C+8,args ? 0:1);
-		break;
-	case CMD_LED_D10:
-		gpio_set_value(PAD_GPIO_C+7,args ? 0:1);
-		break;
-	default:
-		break;
+		
+		case CMD_LED_D7:
+		{
+			gpio_set_value(PAD_GPIO_E+13,args?0:1);
+			
+		}break;
+		//关于其他的led灯自行补充
+		case CMD_LED_D8:
+		{
+			gpio_set_value(PAD_GPIO_C+17,args?0:1);
+			
+		}break;
+
+		case CMD_LED_D9:
+		{
+			gpio_set_value(PAD_GPIO_C+8,args?0:1);
+			
+		}break;
+
+		case CMD_LED_D10:
+		{
+			gpio_set_value(PAD_GPIO_C+7,args?0:1);
+			
+		}break;		
+		
+		default:
+			return -ENOIOCTLCMD;
 	}
-
-
+	
+	
+	return 0;
 }
-
-
 
 
 struct file_operations led_fops={

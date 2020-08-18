@@ -7,35 +7,42 @@
 #include <sys/ioctl.h>
 
 
-#define CMD_LED_D7 _IOW('L',0,unsigned int)
-#define CMD_LED_D8 _IOW('L',1,unsigned int)
-#define CMD_LED_D9 _IOW('L',2,unsigned int)
-#define CMD_LED_D10 _IOW('L',3,unsigned int)
+#define CMD_LED_D7		_IOW('L',0,unsigned int)
+#define CMD_LED_D8		_IOW('L',1,unsigned int)
+#define CMD_LED_D9		_IOW('L',2,unsigned int)
+#define CMD_LED_D10		_IOW('L',3,unsigned int)
 
-#define CMD_KEY_GET _IOR('K',0,unsigned int *)
+#define CMD_KEY_GET		_IOR('K',0,unsigned int *)
 
 
 int main(int argc,char **argv)
 {
-	
+
 	int fd_led;
 	int fd_key;
-
+	
 	unsigned int key_val;
 	
 	fd_led = open("/dev/myled",O_RDWR);
+	
 	if(fd_led < 0)
 	{
+		
 		perror("open:");
 		return -1;
+		
 	}
-
+	
 	fd_key = open("/dev/mykey",O_RDWR);
+	
 	if(fd_key < 0)
 	{
+		
 		perror("open:");
 		return -1;
+		
 	}	
+
 	while(1)
 	{
 		
@@ -69,7 +76,9 @@ int main(int argc,char **argv)
 	
 	//关闭myled的设备
 	close(fd_led);
-	close(fd_key);
+	
+	//关闭mykey的设备
+	close(fd_key);	
 	
 	return 0;
 	

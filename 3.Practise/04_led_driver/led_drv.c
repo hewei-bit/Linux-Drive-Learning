@@ -2,11 +2,12 @@
 #include <linux/kernel.h> //printk
 #include <linux/module.h> //module_init module_exit
 #include <linux/printk.h>
-
+static int i = CONFIG_GEC6818_LED_N;
 static int __init myled_init(void)
 {
     printk("<3>"
            "myled_init\n");
+    printk("<6>""%d\n",i);
     // 成功返回 0
     return 0;
 }

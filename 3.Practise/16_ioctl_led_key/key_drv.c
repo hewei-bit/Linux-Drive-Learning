@@ -9,18 +9,22 @@
 #include <linux/io.h>		//ioremap
 #include <linux/gpio.h>
 #include <cfg_type.h>
-#include <linux/miscdevice.h>//misc_registe
+#include <linux/miscdevice.h>//misc_register
 #include <linux/ioctl.h>
 
-#define CMD_KEY_GET _IOR('K',0,unsigned int *)
+#define CMD_KEY_GET		_IOR('K',0,unsigned int *)
+
+
+//自行补充其他key灯的命令
 
 
 static struct gpio keys_gpios[] = {
-	{ PAD_GPIO_B+31, GPIOF_OUT_INIT_HIGH, "KEY K4" }, /* default to OFF */
-	{ PAD_GPIO_B+30, GPIOF_OUT_INIT_HIGH, "KEY K3" }, /* default to OFF */
-	{ PAD_GPIO_A+28, GPIOF_OUT_INIT_HIGH, "KEY K2" }, /* default to OFF */
-	{ PAD_GPIO_B+9, GPIOF_OUT_INIT_HIGH, "KEY K6" }, /* default to OFF */
+	{ PAD_GPIO_A+28, GPIOF_DIR_IN, "KEY2" }, 
+	{ PAD_GPIO_B+30, GPIOF_DIR_IN, "KEY3" }, 
+	{ PAD_GPIO_B+31, GPIOF_DIR_IN, "KEY4" }, 
+	{ PAD_GPIO_B+9,  GPIOF_DIR_IN, "KEY6" }, 
 };
+
 
 int key_open (struct inode * inode, struct file *file)
 {
@@ -28,34 +32,42 @@ int key_open (struct inode * inode, struct file *file)
 	return 0;
 }
 
+
+
 int key_close (struct inode * inode, struct file *file)
 {
 	printk(KERN_INFO"key_close\n");
+	
+	
 	return 0;
 }
 
 long key_ioctl (struct file *filp, unsigned int cmd, unsigned long args)
 {
-	void __user *argp = (void __user *) args;
-
+	void __user *arpg = (void __user *)args;
+	
 	unsigned int key_val=0;
-
+	
 	switch(cmd)
 	{
+		
 		case CMD_KEY_GET:
 		{
-			key_val|=(gpio_get_value(PAD_GPIO_A+28))?0:1;
-			key_val|=(gpio_get_value(PAD_GPIO_B+30))?0:(1 <<1);
-			key_val|=(gpio_get_value(PAD_GPIO_B+31))?0:(1 << 2);
-			key_val|=(gpio_get_value(PAD_GPIO_B+9))?0:(1 << 3);
-
-			copy_to_user(argp, &key_val, sizeof(key_val));
+			key_val|=gpio_get_value(PAD_GPIO_A+28);
+			key_val|=gpio_get_value(PAD_GPIO_B+30)<<1;
+			key_val|=gpio_get_value(PAD_GPIO_B+31)<<2;
+			key_val|=gpio_get_value(PAD_GPIO_B+9 )<<3;
+			
+			copy_to_user(arpg,&key_val,sizeof key_val);
 			
 		}break;
-
+		
 		default:
 			return -ENOIOCTLCMD;
 	}
+	
+	
+	return 0;
 }
 
 
@@ -66,11 +78,13 @@ struct file_operations key_fops={
 	.unlocked_ioctl = key_ioctl,
 };
 
+
 static struct miscdevice key_miscdev = {
 	.minor = MISC_DYNAMIC_MINOR, //MISC_DYNAMIC_MINOR,动态分配次设备号
-	.name = "mykey", //设备名称,/dev/myled
+	.name = "mykey", //设备名称,/dev/mykey
 	.fops = &key_fops,//文件操作集
 };
+
 
 static int __init mykey_init(void)
 {
@@ -102,14 +116,16 @@ static int __init mykey_init(void)
 
 	//成功返回
 	return 0;
-	
 
+	
 err_gpio_request_array:
 	misc_deregister(&key_miscdev);
 
 err_misc_register:	
 	return rt;
+	
 }
+
 
 static void __exit mykey_exit(void)
 {

@@ -1,0 +1,1 @@
+cmd_/mnt/hgfs/share/irq_bottomhalf/demo2/key_drv.ko := /home/gec/6818GEC/prebuilts/gcc/linux-x86/arm/arm-eabi-4.8/bin/arm-eabi-ld -EL -r  -T /home/gec/6818GEC/kernel/scripts/module-common.lds --build-id  -o /mnt/hgfs/share/irq_bottomhalf/demo2/key_drv.ko /mnt/hgfs/share/irq_bottomhalf/demo2/key_drv.o /mnt/hgfs/share/irq_bottomhalf/demo2/key_drv.mod.o
